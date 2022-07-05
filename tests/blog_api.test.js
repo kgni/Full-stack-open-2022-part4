@@ -69,7 +69,7 @@ test('Likes missing in POST request will default to the value 0', async () => {
 	expect(lastBlog).toHaveProperty('likes', 0);
 });
 
-test.only('If title and url properties are missing in POST request, respond with status code 400', async () => {
+test('If title and url properties are missing in POST request, respond with status code 400', async () => {
 	const newBlog = {
 		author: 'kgni',
 	};
@@ -79,6 +79,36 @@ test.only('If title and url properties are missing in POST request, respond with
 		.send(newBlog)
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
+});
+
+test('delete a blog', async () => {
+	const blogsAtStart = await helper.blogsInDb();
+
+	const blogToView = blogsAtStart[0];
+
+	await api.delete(`/api/blogs/${blogToView.id}`).expect(204);
+
+	const blogsAtEnd = await helper.blogsInDb();
+
+	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+});
+
+test.only('update a blog', async () => {
+	const blogsAtStart = await helper.blogsInDb();
+
+	const blogToUpdate = blogsAtStart[0];
+
+	await api
+		.put(`/api/blogs/${blogToUpdate.id}`)
+		.send({ likes: 10 })
+		.expect(200);
+
+	const blogsAtEnd = await helper.blogsInDb();
+
+	const blogToReview = blogsAtEnd[0];
+
+	expect(blogToReview).toHaveProperty('likes', 10);
+	console.log(blogToReview);
 });
 
 afterAll(() => {
