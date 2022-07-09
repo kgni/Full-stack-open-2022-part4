@@ -18,36 +18,36 @@ usersRouter.post('/', async (request, response) => {
 
 	const existingUser = await User.findOne({ username });
 
-	// If username && password exists, then we run a bunch of validators. If either username or password is missing, then we run the else statement
-	if (username && password) {
-		// check if username is at least 3 chars long
-		if (username.length < 3) {
-			return response.status(400).json({
-				error: 'username must be at least 3 characters',
-			});
-		}
-		// check if password is at least 3 chars long
-		if (password.length < 3) {
-			return response.status(400).json({
-				error: 'password must be at least 3 characters',
-			});
-		}
-		// check if username already exists (must be unique)
-		if (existingUser) {
-			return response.status(400).json({
-				error: 'username must be unique',
-			});
-		}
-
-		// check if username starts with kgni
-		if (username.toLowerCase().startsWith('kgn')) {
-			return response.status(400).json({
-				error: 'username cannot start with kgn',
-			});
-		}
-	} else {
+	// If username or password is not inputted, return error (if username/password is true, then it negates to false which means the if statement won't run)
+	if (!username || !password) {
 		return response.status(400).json({
 			error: 'please provide both username and password',
+		});
+	}
+
+	// check if username is at least 3 chars long
+	if (username.length < 3) {
+		return response.status(400).json({
+			error: 'username must be at least 3 characters',
+		});
+	}
+	// check if password is at least 3 chars long
+	if (password.length < 3) {
+		return response.status(400).json({
+			error: 'password must be at least 3 characters',
+		});
+	}
+	// check if username already exists (must be unique)
+	if (existingUser) {
+		return response.status(400).json({
+			error: 'username must be unique',
+		});
+	}
+
+	// check if username starts with kgni
+	if (username.toLowerCase().startsWith('kgn')) {
+		return response.status(400).json({
+			error: 'username cannot start with kgn',
 		});
 	}
 

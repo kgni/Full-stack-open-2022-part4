@@ -212,6 +212,26 @@ test('If username starts with kgni, return statuscode 404 and error message', as
 	expect(response.body).toHaveLength(helper.initialUsers.length);
 });
 
+test('a valid user can be created', async () => {
+	const newUser = {
+		username: 'testuser',
+		password: '1234',
+		name: 'Preben',
+	};
+
+	await api
+		.post('/api/users')
+		.send(newUser)
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+
+	const usersAtEnd = await helper.usersInDb();
+	expect(usersAtEnd).toHaveLength(helper.initialUsers.length + 1);
+
+	const contents = usersAtEnd.map((user) => user.username);
+	expect(contents).toContain('testuser');
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
