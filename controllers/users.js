@@ -3,7 +3,7 @@ const { Router } = require('express');
 const usersRouter = require('express').Router();
 const User = require('../models/user');
 
-usersRouter.get('/', async (request, response) => {
+usersRouter.get('/', async (req, res) => {
 	const users = await User.find({}).populate('blogs', {
 		title: 1,
 		author: 1,
@@ -11,46 +11,46 @@ usersRouter.get('/', async (request, response) => {
 	});
 
 	if (users.length === 0) {
-		response.status(404).json({ error: 'No users found' });
+		res.status(404).json({ error: 'No users found' });
 	}
 
-	response.json(users);
+	res.json(users);
 });
 
-usersRouter.post('/', async (request, response) => {
-	const { username, name, password } = request.body;
+usersRouter.post('/', async (req, res) => {
+	const { username, name, password } = req.body;
 
 	const existingUser = await User.findOne({ username });
 
 	// If username or password is not inputted, return error (if username/password is true, then it negates to false which means the if statement won't run)
 	if (!username || !password) {
-		return response.status(400).json({
+		return res.status(400).json({
 			error: 'please provide both username and password',
 		});
 	}
 
 	// check if username is at least 3 chars long
 	if (username.length < 3) {
-		return response.status(400).json({
+		return res.status(400).json({
 			error: 'username must be at least 3 characters',
 		});
 	}
 	// check if password is at least 3 chars long
 	if (password.length < 3) {
-		return response.status(400).json({
+		return res.status(400).json({
 			error: 'password must be at least 3 characters',
 		});
 	}
 	// check if username already exists (must be unique)
 	if (existingUser) {
-		return response.status(400).json({
+		return res.status(400).json({
 			error: 'username must be unique',
 		});
 	}
 
 	// check if username starts with kgni
 	if (username.toLowerCase().startsWith('kgn')) {
-		return response.status(400).json({
+		return res.status(400).json({
 			error: 'username cannot start with kgn',
 		});
 	}
@@ -58,7 +58,7 @@ usersRouter.post('/', async (request, response) => {
 	// check if username starts with 'kgni', if it does don't allow a user to be created
 
 	// if (password.length < 6) {
-	//   return response.status(400).json({
+	//   return res.status(400).json({
 	// 		error: 'password most be longer than 6 characters',
 	// 	});
 	// }
@@ -74,7 +74,7 @@ usersRouter.post('/', async (request, response) => {
 
 	const savedUser = await user.save();
 
-	response.status(201).json(savedUser);
+	res.status(201).json(savedUser);
 });
 
 module.exports = usersRouter;

@@ -23,9 +23,9 @@ beforeEach(async () => {
 });
 
 test('all blogs are returned', async () => {
-	const response = await api.get('/api/blogs');
+	const res = await api.get('/api/blogs');
 
-	expect(response.body).toHaveLength(helper.initialBlogs.length);
+	expect(res.body).toHaveLength(helper.initialBlogs.length);
 });
 
 test('blogs contains id property', async () => {
@@ -57,7 +57,7 @@ test('a valid blog can be added', async () => {
 	expect(contents).toContain('This is a new blog');
 });
 
-test('Likes missing in POST request will default to the value 0', async () => {
+test('Likes missing in POST req will default to the value 0', async () => {
 	const newBlog = {
 		title: 'This is a new blog',
 		author: 'kgni',
@@ -76,7 +76,7 @@ test('Likes missing in POST request will default to the value 0', async () => {
 	expect(lastBlog).toHaveProperty('likes', 0);
 });
 
-test('If title and url properties are missing in POST request, respond with status code 400', async () => {
+test('If title and url properties are missing in POST req, respond with status code 400', async () => {
 	const newBlog = {
 		author: 'kgni',
 	};
@@ -119,9 +119,9 @@ test('update a blog', async () => {
 });
 
 test('all users are returned', async () => {
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('If username is missing return statuscode 400 and an error message', async () => {
@@ -136,9 +136,9 @@ test('If username is missing return statuscode 400 and an error message', async 
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
 
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('If  password is missing return statuscode 400 and an error message', async () => {
@@ -153,9 +153,9 @@ test('If  password is missing return statuscode 400 and an error message', async
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
 
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('If username does not have a length of at least 3 return statuscode 400 and an error message', async () => {
@@ -171,9 +171,9 @@ test('If username does not have a length of at least 3 return statuscode 400 and
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
 
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('If password does not have a length of at least 3 return statuscode 400 and an error message', async () => {
@@ -189,9 +189,9 @@ test('If password does not have a length of at least 3 return statuscode 400 and
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
 
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('If username starts with kgni, return statuscode 404 and error message', async () => {
@@ -207,9 +207,9 @@ test('If username starts with kgni, return statuscode 404 and error message', as
 		.expect(400)
 		.expect('Content-Type', /application\/json/);
 
-	const response = await api.get('/api/users');
+	const res = await api.get('/api/users');
 
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(res.body).toHaveLength(helper.initialUsers.length);
 });
 
 test('a valid user can be created', async () => {
