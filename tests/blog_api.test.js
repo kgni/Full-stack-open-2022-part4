@@ -5,13 +5,20 @@ const app = require('../index');
 const api = supertest(app);
 
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
+	await User.deleteMany({});
 
 	for (let blog of helper.initialBlogs) {
 		let blogObject = new Blog(blog);
 		await blogObject.save();
+	}
+
+	for (let user of helper.initialUsers) {
+		let userObject = new User(user);
+		await userObject.save();
 	}
 });
 
@@ -93,7 +100,7 @@ test('delete a blog', async () => {
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
 });
 
-test.only('update a blog', async () => {
+test('update a blog', async () => {
 	const blogsAtStart = await helper.blogsInDb();
 
 	const blogToUpdate = blogsAtStart[0];
@@ -109,6 +116,100 @@ test.only('update a blog', async () => {
 
 	expect(blogToReview).toHaveProperty('likes', 10);
 	console.log(blogToReview);
+});
+
+test('all users are returned', async () => {
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
+});
+
+test('If username is missing return statuscode 400 and an error message', async () => {
+	const newUser = {
+		password: 'testuser',
+		name: 'Mario',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
+});
+
+test('If  password is missing return statuscode 400 and an error message', async () => {
+	const newUser = {
+		username: 'testuser',
+		name: 'Mario',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
+});
+
+test('If username does not have a length of at least 3 return statuscode 400 and an error message', async () => {
+	const newUser = {
+		username: 'te',
+		password: '1234',
+		name: 'Mario',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
+});
+
+test('If password does not have a length of at least 3 return statuscode 400 and an error message', async () => {
+	const newUser = {
+		username: 'testuser',
+		password: '12',
+		name: 'Mario',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
+});
+
+test('If username starts with kgni, return statuscode 404 and error message', async () => {
+	const newUser = {
+		username: 'kgni123',
+		password: '12345',
+		name: 'Mario',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/users');
+
+	expect(response.body).toHaveLength(helper.initialUsers.length);
 });
 
 afterAll(() => {
