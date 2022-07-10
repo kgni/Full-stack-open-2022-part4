@@ -7,12 +7,14 @@ const initialBlogs = [
 		author: 'kgni',
 		url: 'https://www.google.com/',
 		likes: 1,
+		user: '62c9954caa4fe80673911d0b',
 	},
 	{
 		title: 'Another blog post',
 		author: 'kgni',
 		url: 'https://www.google.com/',
 		likes: 2,
+		user: '62c9954caa4fe80673911d0b',
 	},
 ];
 
@@ -24,11 +26,15 @@ const blogsInDb = async () => {
 const initialUsers = [
 	{
 		username: 'kgni',
+		passwordHash: 'password',
 		name: 'Karl',
+		blogs: [],
 	},
 	{
-		username: 'preben',
+		username: 'admin',
+		password: 'password',
 		name: 'Prebsi',
+		blogs: [],
 	},
 ];
 
